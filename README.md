@@ -115,3 +115,10 @@ Spug是面向中小型企业设计的轻量级无Agent的自动化运维平台�
   
 ## License & Copyright
 [AGPL-3.0](https://opensource.org/licenses/AGPL-3.0)
+
+```shell
+# 数据库初始化
+python manage.py migrate --run-syncdb
+# 创建管理员
+python manage.py user add -u admin -p admin -s -n 管理员
+```
