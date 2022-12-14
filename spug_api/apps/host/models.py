@@ -1,12 +1,15 @@
 # Copyright: (c) OpenSpug Organization. https://github.com/openspug/spug
 # Copyright: (c) <spug.dev@gmail.com>
 # Released under the AGPL-3.0 License.
+import os
+import json
+
+from django.conf import settings
 from django.db import models
 from libs import ModelMixin, human_datetime
 from apps.account.models import User
 from apps.setting.utils import AppSetting
 from libs.ssh import SSH
-import json
 
 
 class Host(models.Model, ModelMixin):
@@ -22,7 +25,12 @@ class Host(models.Model, ModelMixin):
 
     @property
     def private_key(self):
-        return self.pkey or AppSetting.get('private_key')
+        if self.pkey:
+            return self.pkey
+        if os.path.isfile(settings.SSH_PRIVATE_KEY):
+            with open(settings.SSH_PRIVATE_KEY) as f:
+                return f.read()
+        return AppSetting.get('private_key')
 
     def get_ssh(self, pkey=None, default_env=None):
         pkey = pkey or self.private_key
